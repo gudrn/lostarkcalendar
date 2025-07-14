@@ -2,7 +2,18 @@ const axios = require("axios");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const getIslands = async () => {
+// 오늘 날짜(한국 시간) 문자열 반환 함수
+function getTodayStringKST() {
+  const now = new Date();
+  const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const year = koreaTime.getFullYear();
+  const month = String(koreaTime.getMonth() + 1).padStart(2, "0");
+  const day = String(koreaTime.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+// 카테고리가 '모험 섬'이고, 오늘 날짜에 해당하며, 골드 보상이 있는 섬의 이름만 추출
+const getTodayGoldIslands = async () => {
   try {
     const res = await axios.get(
       "https://developer-lostark.game.onstove.com/gamecontents/calendar",
@@ -13,62 +24,98 @@ const getIslands = async () => {
       }
     );
 
-    // 현재 날짜 (한국 시간 기준) 구하기
-    const now = new Date();
-    const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-    const year = koreaTime.getFullYear();
-    const month = String(koreaTime.getMonth() + 1).padStart(2, "0");
-    const day = String(koreaTime.getDate()).padStart(2, "0");
-    const todayString = `${year}-${month}-${day}`;
+    const todayString = getTodayStringKST();
 
-    // 오늘 날짜의 "모험 섬" 중 골드를 주는 섬만 필터링
-    const data = res.data.filter((event) => {
+    // 조건에 맞는 섬만 추출
+    const islands = res.data.filter((event) => {
       if (event.CategoryName !== "모험 섬") return false;
-      if (!event.StartTime) return false;
-      // 이벤트 시작 시간이 오늘인지 확인
-      const eventDate = new Date(
-        new Date(event.StartTime).getTime() + 9 * 60 * 60 * 1000
-      );
-      const eventYear = eventDate.getFullYear();
-      const eventMonth = String(eventDate.getMonth() + 1).padStart(2, "0");
-      const eventDay = String(eventDate.getDate()).padStart(2, "0");
-      const eventDateString = `${eventYear}-${eventMonth}-${eventDay}`;
-      if (eventDateString !== todayString) return false;
-
+      if (!event.StartTimes || !Array.isArray(event.StartTimes)) return false;
       if (!event.RewardItems || !Array.isArray(event.RewardItems)) return false;
 
-      // RewardItems의 각 아이템의 Items 배열에 "골드"가 있는지 확인
+      // 오늘 날짜에 해당하는 StartTimes가 있는지 확인
+      const hasToday = event.StartTimes.some((startTime) => {
+        const eventDate = new Date(
+          new Date(startTime).getTime() + 9 * 60 * 60 * 1000
+        );
+        const eventYear = eventDate.getFullYear();
+        const eventMonth = String(eventDate.getMonth() + 1).padStart(2, "0");
+        const eventDay = String(eventDate.getDate()).padStart(2, "0");
+        const eventDateString = `${eventYear}-${eventMonth}-${eventDay}`;
+        return eventDateString === todayString;
+      });
+      if (!hasToday) return false;
+
+      // RewardItems의 Items 배열에 "골드"가 있는지 확인
       for (const reward of event.RewardItems) {
         if (!reward.Items || !Array.isArray(reward.Items)) continue;
         for (const item of reward.Items) {
-          if (item.Name && item.Name.includes("골드")) {
+          // item은 객체 형태임: { Name, Icon, Grade, StartTimes }
+          if (!item.Name || !item.Name.includes("골드")) continue;
+
+          // StartTimes가 없는 경우(골드가 항상 지급되는 경우)도 있으므로, StartTimes가 없으면 오늘 날짜와 무관하게 true 반환
+          if (
+            !item.StartTimes ||
+            !Array.isArray(item.StartTimes) ||
+            item.StartTimes.length === 0
+          ) {
             return true;
+          }
+
+          // StartTimes가 있으면, 오늘 날짜에 해당하는 시간이 있는지 확인
+          for (const startTime of item.StartTimes) {
+            if (typeof startTime === "string" && startTime.includes("T")) {
+              const datePart = startTime.split("T")[0]; // "2025-07-12"
+              if (datePart === todayString) {
+                return true;
+              }
+            }
           }
         }
       }
       return false;
     });
 
-    if (data.length === 0) return `오늘 골드를 주는 모험섬이 없습니다.`;
+    if (islands.length === 0) {
+      return "오늘 골드를 주는 모험섬이 없습니다.";
+    }
 
-    // 출력: "골드섬, [섬이름] - [몇시]"
-    const islandInfos = data.map((event) => {
-      // 한국 시간 기준으로 시간 추출
-      const eventDate = new Date(
-        new Date(event.StartTime).getTime() + 9 * 60 * 60 * 1000
-      );
-      const hour = String(eventDate.getHours()).padStart(2, "0");
-      const minute = String(eventDate.getMinutes()).padStart(2, "0");
-      return `골드섬, ${event.ContentsName} - ${hour}시${
-        minute !== "00" ? " " + minute + "분" : ""
-      }`;
+    // 오늘 날짜에 해당하는 StartTimes만 추출해서, 섬 이름과 시간을 반환
+    let result = [];
+    islands.forEach((event) => {
+      const todayTimes = event.StartTimes.filter((startTime) => {
+        const eventDate = new Date(
+          new Date(startTime).getTime() + 9 * 60 * 60 * 1000
+        );
+        const eventYear = eventDate.getFullYear();
+        const eventMonth = String(eventDate.getMonth() + 1).padStart(2, "0");
+        const eventDay = String(eventDate.getDate()).padStart(2, "0");
+        const eventDateString = `${eventYear}-${eventMonth}-${eventDay}`;
+        return eventDateString === todayString;
+      });
+
+      todayTimes.forEach((startTime) => {
+        const eventDate = new Date(
+          new Date(startTime).getTime() + 9 * 60 * 60 * 1000
+        );
+        const hour = String(eventDate.getHours()).padStart(2, "0");
+        const minute = String(eventDate.getMinutes()).padStart(2, "0");
+        result.push(
+          `${event.ContentsName} - ${hour}시${
+            minute !== "00" ? " " + minute + "분" : ""
+          }`
+        );
+      });
     });
 
-    return islandInfos.join("\n");
+    // 중복 제거
+    result = [...new Set(result)];
+
+    // 결과 반환 (여러 줄로)
+    return result.join("\n");
   } catch (err) {
     console.error(err);
     return "❌ 모험섬 정보를 불러오지 못했어요.";
   }
 };
 
-module.exports = getIslands;
+module.exports = { getTodayGoldIslands };

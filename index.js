@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
-const getIslands = require("./islandFetcher");
+const { getTodayGoldIslands } = require("./islandFetcher");
 const scheduleIslandAlerts = require("./scheduler");
 
 const client = new Client({
@@ -20,7 +20,7 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
   if (message.content === "!모험섬") {
-    const reply = await getIslands();
+    const reply = await getTodayGoldIslands();
     message.channel.send(reply);
   }
 });
