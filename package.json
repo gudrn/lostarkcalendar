@@ -18,7 +18,10 @@
   "homepage": "https://github.com/gudrn/lostarkcalendar#readme",
   "description": "",
   "dependencies": {
+    "axios": "^1.10.0",
     "discord.js": "^14.21.0",
-    "dotenv": "^17.2.0"
+    "dotenv": "^17.2.0",
+    "node-schedule": "^2.1.1",
+    "pm2": "^6.0.8"
   }
 }

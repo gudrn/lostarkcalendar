@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
-const getIslands = require("./getIslands");
+const getIslands = require("./islandFetcher");
 const scheduleIslandAlerts = require("./scheduler");
 
 const client = new Client({

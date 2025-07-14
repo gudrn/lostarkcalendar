@@ -1,5 +1,5 @@
 const schedule = require("node-schedule");
-const getIslands = require("./getIslands");
+const getIslands = require("./islandFetcher");
 require("dotenv").config();
 
 const scheduleIslandAlerts = (client) => {
