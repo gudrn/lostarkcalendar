@@ -26,7 +26,7 @@ const getTodayGoldIslands = async () => {
 
     const todayString = getTodayStringKST();
 
-    // 조건에 맞는 섬만 추출
+    // 조건에 맞는 섬만 추출 (골드만)
     const islands = res.data.filter((event) => {
       if (event.CategoryName !== "모험 섬") return false;
       if (!event.StartTimes || !Array.isArray(event.StartTimes)) return false;
@@ -52,7 +52,7 @@ const getTodayGoldIslands = async () => {
           // item은 객체 형태임: { Name, Icon, Grade, StartTimes }
           if (!item.Name || !item.Name.includes("골드")) continue;
 
-          // StartTimes가 없는 경우(골드가 항상 지급되는 경우)도 있으므로, StartTimes가 없으면 오늘 날짜와 무관하게 true 반환
+          // StartTimes가 없는 경우(항상 지급되는 경우)도 있으므로, StartTimes가 없으면 오늘 날짜와 무관하게 true 반환
           if (
             !item.StartTimes ||
             !Array.isArray(item.StartTimes) ||
@@ -79,8 +79,10 @@ const getTodayGoldIslands = async () => {
       return "오늘 골드를 주는 모험섬이 없습니다.";
     }
 
-    // 오늘 날짜에 해당하는 StartTimes만 추출해서, 섬 이름과 시간을 반환
-    let result = [];
+    // 모험섬 이름이 중복되는 것은 하나로만 표시
+    // 각 섬 이름별로 시간, 보상종류를 모아서 출력
+    const islandMap = new Map();
+
     islands.forEach((event) => {
       const todayTimes = event.StartTimes.filter((startTime) => {
         const eventDate = new Date(
@@ -93,22 +95,49 @@ const getTodayGoldIslands = async () => {
         return eventDateString === todayString;
       });
 
+      // 해당 이벤트에서 골드 보상 종류 추출
+      let rewardTypes = new Set();
+      for (const reward of event.RewardItems) {
+        if (!reward.Items || !Array.isArray(reward.Items)) continue;
+        for (const item of reward.Items) {
+          if (item.Name && item.Name.includes("골드")) rewardTypes.add("골드");
+        }
+      }
+      const rewardTypeStr = Array.from(rewardTypes).join(", ");
+
+      // 기존에 이미 있으면 시간과 보상종류를 합침
+      if (!islandMap.has(event.ContentsName)) {
+        islandMap.set(event.ContentsName, {
+          times: [],
+          rewardTypes: new Set(),
+        });
+      }
+      const islandInfo = islandMap.get(event.ContentsName);
+
       todayTimes.forEach((startTime) => {
         const eventDate = new Date(
           new Date(startTime).getTime() + 9 * 60 * 60 * 1000
         );
         const hour = String(eventDate.getHours()).padStart(2, "0");
         const minute = String(eventDate.getMinutes()).padStart(2, "0");
-        result.push(
-          `${event.ContentsName} - ${hour}시${
-            minute !== "00" ? " " + minute + "분" : ""
-          }`
-        );
+        const timeStr = `${hour}시${
+          minute !== "00" ? " " + minute + "분" : ""
+        }`;
+        if (!islandInfo.times.includes(timeStr)) {
+          islandInfo.times.push(timeStr);
+        }
       });
+
+      rewardTypes.forEach((type) => islandInfo.rewardTypes.add(type));
     });
 
-    // 중복 제거
-    result = [...new Set(result)];
+    // 결과 문자열 생성
+    let result = [];
+    islandMap.forEach((info, name) => {
+      const timesStr = info.times.join(", ");
+      const rewardTypeStr = Array.from(info.rewardTypes).join(", ");
+      result.push(`${name} - ${timesStr} (${rewardTypeStr})`);
+    });
 
     // 결과 반환 (여러 줄로)
     return result.join("\n");
