@@ -7,7 +7,7 @@ const scheduleIslandAlerts = (client) => {
     try {
       const channel = await client.channels.fetch(process.env.CHANNEL_ID);
       const message = await getIslands();
-      await channel.send(`⏰ 자동 알림\n${message}`);
+      await channel.send(`@everyone\n⏰ 자동 알림\n${message}`);
     } catch (err) {
       console.error("자동 알림 전송 실패:", err);
     }
