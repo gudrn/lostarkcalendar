@@ -15,9 +15,6 @@ const scheduleIslandAlerts = (client) => {
 
   // 매일 오전 9시
   schedule.scheduleJob("0 12 * * *", sendIslandMessage);
-
-  // 매일 오후 6시
-  schedule.scheduleJob("0 18 * * *", sendIslandMessage);
 };
 
 module.exports = scheduleIslandAlerts;
