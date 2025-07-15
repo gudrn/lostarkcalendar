@@ -1,5 +1,5 @@
 const schedule = require("node-schedule");
-const getTodayGoldIslands = require("./islandFetcher");
+const { getTodayGoldIslands } = require("./islandFetcher");
 require("dotenv").config();
 
 const scheduleIslandAlerts = (client) => {
@@ -14,7 +14,7 @@ const scheduleIslandAlerts = (client) => {
   };
 
   // 매일 12시 6분에 알림
-  schedule.scheduleJob("6 12 * * *", sendIslandMessage);
+  schedule.scheduleJob("30 12 * * *", sendIslandMessage);
 };
 
 module.exports = scheduleIslandAlerts;
