@@ -13,8 +13,8 @@ const scheduleIslandAlerts = (client) => {
     }
   };
 
-  // 매일 오전 9시
-  schedule.scheduleJob("0 12 * * *", sendIslandMessage);
+  // 매일 12시 6분에 알림
+  schedule.scheduleJob("6 12 * * *", sendIslandMessage);
 };
 
 module.exports = scheduleIslandAlerts;
