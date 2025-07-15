@@ -149,7 +149,7 @@ const getTodayGoldIslands = async () => {
 
     // 결과 반환 (여러 줄로)
     if (result.length === 0) {
-      return "오늘 골드를 주는 모험섬이 없습니다.";
+      return null;
     }
     return result.join("\n");
   } catch (err) {
