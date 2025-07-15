@@ -1,12 +1,12 @@
 const schedule = require("node-schedule");
-const { getTodayGoldIslands } = require("./islandFetcher");
+const { getTodayIsGoldLands } = require("./islandFetcher");
 require("dotenv").config();
 
 const scheduleIslandAlerts = (client) => {
   const sendIslandMessage = async () => {
     try {
       const channel = await client.channels.fetch(process.env.CHANNEL_ID);
-      const message = await getTodayGoldIslands();
+      const message = await getTodayIsGoldLands();
       if (!message) return;
       await channel.send(
         `@everyone\n⏰ 오늘 골드를 주는 모험섬\n${message} \n까먹지 마시고 4000천골 더 벌어야죠.`

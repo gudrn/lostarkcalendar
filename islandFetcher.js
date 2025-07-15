@@ -4,7 +4,7 @@ require("dotenv").config();
 const ALLOWED_HOURS = ["09", "11", "13", "19", "23"];
 
 // 오늘 날짜(한국 시간) yyyy-mm-dd 문자열 반환
-function getTodayStringKST() {
+function getTodayStringKst() {
   const now = new Date();
   const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
   return koreaTime.toISOString().slice(0, 10);
@@ -49,7 +49,7 @@ function hasGoldReward(event, todayString) {
 }
 
 // 오늘 골드 주는 모험섬 정보 반환
-const getTodayGoldIslands = async () => {
+const getTodayIsGoldLands = async () => {
   try {
     const res = await axios.get(
       "https://developer-lostark.game.onstove.com/gamecontents/calendar",
@@ -60,7 +60,7 @@ const getTodayGoldIslands = async () => {
       }
     );
 
-    const todayString = getTodayStringKST();
+    const todayString = getTodayStringKst();
 
     // 조건에 맞는 섬만 추출
     const islands = res.data.filter((event) => {
@@ -72,7 +72,7 @@ const getTodayGoldIslands = async () => {
       );
       if (!hasToday) return false;
       // 골드 보상 여부
-      return hasGoldReward(event, todayString);
+      return hasGoldReward(event, todayString); // 골드 보상 여부 확인
     });
 
     if (islands.length === 0) {
@@ -142,4 +142,4 @@ const getTodayGoldIslands = async () => {
   }
 };
 
-module.exports = { getTodayGoldIslands };
+module.exports = { getTodayIsGoldLands };
