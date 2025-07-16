@@ -1,7 +1,8 @@
-require("dotenv").config();
-const { Client, GatewayIntentBits } = require("discord.js");
-const scheduleIslandAlerts = require("./scheduler");
-const { getTodayIsGoldLands } = require("./islandFetcher");
+import dotenv from "dotenv";
+dotenv.config();
+import { Client, GatewayIntentBits } from "discord.js";
+import scheduleIslandAlerts from "./scheduler.js";
+import { getTodayIsGoldLands } from "./islandFetcher.js";
 
 const client = new Client({
   intents: [

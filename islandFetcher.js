@@ -1,5 +1,6 @@
-const axios = require("axios");
-require("dotenv").config();
+import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 
 const ALLOWED_HOURS = ["09", "11", "13", "19", "23"];
 
