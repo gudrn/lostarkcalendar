@@ -43,6 +43,7 @@ export const getTodayGoldIslands = async () => {
         if (datePart === todayString) {
           const hour = timePart.split(":")[0];
           if (ALLOWED_HOURS.includes(hour)) {
+            console.log(hour);
             return true;
           }
         }
