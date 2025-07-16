@@ -9,9 +9,6 @@ export const scheduleIslandAlerts = (client) => {
       const channel = await client.channels.fetch(process.env.CHANNEL_ID);
       const message = await getTodayGoldIslands();
       if (!message) {
-        await channel.send(`오늘은 골드섬이 없습니다.`);
-        await channel.send(`즐거운 로생되세요.`);
-        await channel.send(`----------------------------------------`);
         return;
       }
       await channel.send(`@everyone\n⏰ 오늘 골드를 주는 모험섬\n${message} `);
