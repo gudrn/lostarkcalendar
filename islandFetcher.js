@@ -35,6 +35,7 @@ export const getTodayGoldIslands = async () => {
         reward.Items.some((item) => item.Name.includes("골드"))
       );
     });
+    console.log(goldIslands);
 
     let ifToday = goldIslands.filter((event) => {
       for (const time of event.StartTimes) {
