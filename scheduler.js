@@ -3,7 +3,7 @@ import { getTodayGoldIslands } from "./islandFetcher.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-const scheduleIslandAlerts = (client) => {
+export const scheduleIslandAlerts = (client) => {
   const sendIslandMessage = async () => {
     try {
       const channel = await client.channels.fetch(process.env.CHANNEL_ID);
@@ -22,5 +22,3 @@ const scheduleIslandAlerts = (client) => {
   // 매일 18시 30분에 알림
   schedule.scheduleJob("30 18 * * *", sendIslandMessage);
 };
-
-module.exports = scheduleIslandAlerts;
