@@ -34,6 +34,7 @@ client.on("messageCreate", async (message) => {
 
   if (message.content === "!모험섬") {
     const reply = await getTodayGoldIslands();
+    console.log(reply);
     if (!reply) {
       return;
     }
