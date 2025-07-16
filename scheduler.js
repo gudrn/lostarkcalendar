@@ -1,6 +1,7 @@
-const schedule = require("node-schedule");
-const { getTodayGoldIslands } = require("./islandFetcher");
-require("dotenv").config();
+import schedule from "node-schedule";
+import { getTodayGoldIslands } from "./islandFetcher.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const scheduleIslandAlerts = (client) => {
   const sendIslandMessage = async () => {

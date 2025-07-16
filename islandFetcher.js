@@ -1,5 +1,5 @@
-const axios = require("axios");
-const dotenv = require("dotenv");
+import axios from "axios";
+import dotenv from "dotenv";
 dotenv.config();
 
 // 오늘 날짜(한국 시간) 문자열 반환 함수
@@ -15,7 +15,7 @@ function getTodayStringKST() {
 // 9시, 11시, 13시, 19시, 23시에 해당하는 시간만 필터링
 const ALLOWED_HOURS = ["09", "11", "13", "19", "23"];
 
-const getTodayGoldIslands = async () => {
+export const getTodayGoldIslands = async () => {
   try {
     const res = await axios.get(
       "https://developer-lostark.game.onstove.com/gamecontents/calendar",
@@ -157,5 +157,3 @@ const getTodayGoldIslands = async () => {
     return "❌ 모험섬 정보를 불러오지 못했어요.";
   }
 };
-
-module.exports = { getTodayGoldIslands };
