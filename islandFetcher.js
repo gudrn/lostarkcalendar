@@ -49,7 +49,7 @@ function hasGoldReward(event, todayString) {
 }
 
 // 오늘 골드 주는 모험섬 정보 반환
-const getTodayIsGoldLands = async () => {
+export const getTodayIsGoldLands = async () => {
   try {
     const res = await axios.get(
       "https://developer-lostark.game.onstove.com/gamecontents/calendar",
@@ -141,5 +141,3 @@ const getTodayIsGoldLands = async () => {
     return "❌ 모험섬 정보를 불러오지 못했어요.";
   }
 };
-
-module.exports = { getTodayIsGoldLands };
