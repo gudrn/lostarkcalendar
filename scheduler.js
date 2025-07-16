@@ -22,5 +22,5 @@ export const scheduleIslandAlerts = (client) => {
   // 매일 12시 30분에 알림
   schedule.scheduleJob("30 12 * * *", sendIslandMessage);
   // 매일 18시 30분에 알림
-  schedule.scheduleJob("30 18 * * *", sendIslandMessage);
+  schedule.scheduleJob("0 20 * * *", sendIslandMessage);
 };
