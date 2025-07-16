@@ -5,10 +5,19 @@ dotenv.config();
 // 오늘 날짜(한국 시간) 문자열 반환 함수
 function getTodayStringKST() {
   const now = new Date();
-  const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  const year = koreaTime.getFullYear();
-  const month = String(koreaTime.getMonth() + 1).padStart(2, "0");
-  const day = String(koreaTime.getDate()).padStart(2, "0");
+  const options = {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  const formatter = new Intl.DateTimeFormat("ko-KR", options);
+  const parts = formatter.formatToParts(now);
+
+  const year = parts.find((p) => p.type === "year").value;
+  const month = parts.find((p) => p.type === "month").value;
+  const day = parts.find((p) => p.type === "day").value;
+
   return `${year}-${month}-${day}`;
 }
 
@@ -28,7 +37,6 @@ export const getTodayGoldIslands = async () => {
     );
 
     const todayString = getTodayStringKST();
-    console.log(todayString);
     const goldIslands = res.data.filter((event) => {
       if (event.CategoryName !== "모험 섬") return false;
       return event.RewardItems.some((reward) =>
@@ -41,11 +49,10 @@ export const getTodayGoldIslands = async () => {
         const [datePart, timePart] = time.split("T");
         if (datePart === todayString) {
           const hour = timePart.split(":")[0];
-          console.log(hour);
+
           if (ALLOWED_HOURS.includes(hour)) {
             return true;
           }
-          console.log(hour);
         }
       }
       return false;
