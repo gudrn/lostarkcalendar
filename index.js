@@ -34,6 +34,11 @@ client.on("messageCreate", async (message) => {
 
   if (message.content === "!모험섬") {
     const reply = await getTodayGoldIslands();
+    if (!reply) {
+      message.channel.send(`오늘은 없습니다.`);
+      return;
+    }
+
     message.channel.send(reply);
   }
 });

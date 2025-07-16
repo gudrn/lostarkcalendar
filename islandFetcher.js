@@ -36,7 +36,7 @@ export const getTodayGoldIslands = async () => {
       );
     });
 
-    const ifToday = goldIslands.filter((event) => {
+    let ifToday = goldIslands.filter((event) => {
       for (const time of event.StartTimes) {
         const [datePart, timePart] = time.split("T");
         if (datePart === todayString) {
@@ -48,12 +48,12 @@ export const getTodayGoldIslands = async () => {
       }
       return false;
     });
-    console.log(ifToday);
+    if (ifToday == null) {
+      return null;
+    }
     const todayGoldIsland = ifToday.map((event) => {
       return `${event.ContentsName} ${event.StartTimes.join(", ")}`;
     });
-
-    console.log(todayGoldIsland);
 
     const message = ifToday
       .map((event) => {

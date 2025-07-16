@@ -8,12 +8,17 @@ export const scheduleIslandAlerts = (client) => {
     try {
       const channel = await client.channels.fetch(process.env.CHANNEL_ID);
       const message = await getTodayGoldIslands();
-      if (!message) return;
-      await channel.send(
-        `@everyone\n⏰ 오늘 골드를 주는 모험섬\n${message} \n까먹지 마시고 4000천골 더 벌어야죠.`
-      );
+      if (!message) {
+        await channel.send(`오늘은 골드섬이 없습니다.`);
+        await channel.send(`오늘도 즐거운 로생되세요.`);
+        await channel.send(`----------------------------------------`);
+        return;
+      }
+      await channel.send(`@everyone\n⏰ 오늘 골드를 주는 모험섬\n${message} `);
+      await channel.send(`오늘도 즐거운 로생되세요.`);
+      await channel.send(`----------------------------------------`);
     } catch (err) {
-      console.error("자동 알림 전송 실패:", err);
+      console.error("❌ 자동 알림 전송 실패:", err);
     }
   };
 
