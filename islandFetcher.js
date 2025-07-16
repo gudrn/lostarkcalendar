@@ -48,6 +48,7 @@ export const getTodayGoldIslands = async () => {
       }
       return false;
     });
+    console.log(ifToday);
     if (ifToday == null) {
       return null;
     }
