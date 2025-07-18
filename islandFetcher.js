@@ -17,7 +17,7 @@ function getTodayStringKST() {
   const year = parts.find((p) => p.type === "year").value;
   const month = parts.find((p) => p.type === "month").value;
   const day = parts.find((p) => p.type === "day").value;
-
+  console.log(`${year}-${month}-${day}`);
   return `${year}-${month}-${day}`;
 }
 

@@ -20,7 +20,7 @@ client.once("ready", async () => {
 
   // 🕒 현재 한국 시간 출력
   const now = new Date();
-  console.log(now);
+  console.log(now.toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }));
 });
 
 client.on("messageCreate", async (message) => {
