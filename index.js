@@ -20,13 +20,7 @@ client.once("ready", async () => {
 
   // 🕒 현재 한국 시간 출력
   const now = new Date();
-  const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  console.log(
-    `🕒 현재 한국 시간: ${koreaTime
-      .toISOString()
-      .replace("T", " ")
-      .slice(0, 19)}`
-  );
+  console.log(now);
 });
 
 client.on("messageCreate", async (message) => {
