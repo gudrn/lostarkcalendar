@@ -2,6 +2,9 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
+// 오늘의 모든 모험섬 정보를 저장할 전역변수 배열 (외부에서 참조 가능)
+export let todayIslandsData = [];
+
 // 오늘 날짜(한국 시간) 문자열 반환 함수
 function getTodayStringKST() {
   const now = new Date();
@@ -27,6 +30,10 @@ const ALLOWED_HOURS = ["09", "11", "13", "19", "23"];
 // 골드 아이템이 있는 모험섬만 추출
 export const getTodayGoldIslands = async () => {
   try {
+    if (todayIslandsData.length != 0) {
+      let message = todayIslandsData.pop();
+      return message;
+    }
     const res = await axios.get(
       "https://developer-lostark.game.onstove.com/gamecontents/calendar",
       {
@@ -57,7 +64,6 @@ export const getTodayGoldIslands = async () => {
       }
       return false;
     });
-    console.log(ifToday);
     if (ifToday == null) {
       return null;
     }
@@ -74,9 +80,11 @@ export const getTodayGoldIslands = async () => {
           const hour = time.split("T")[1].split(":")[0];
           return `${hour}시`;
         });
+
         return `${event.ContentsName}: (${todayTimes.join(", ")})`;
       })
       .join("\n");
+    todayIslandsData.push(message);
     return message;
   } catch (err) {
     console.error(err);
