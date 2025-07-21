@@ -1,8 +1,8 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
-import { Client, GatewayIntentBits } from "discord.js";
-import { scheduleIslandAlerts } from "./scheduler.js";
-import { getTodayGoldIslands } from "./islandFetcher.js";
+import { Client, GatewayIntentBits } from 'discord.js';
+import { scheduleIslandAlerts } from './scheduler.js';
+import { getTodayGoldIslands } from './islandFetcher.js';
 
 const client = new Client({
   intents: [
@@ -12,28 +12,25 @@ const client = new Client({
   ],
 });
 
-client.once("ready", async () => {
+client.once('ready', async () => {
   console.log(`✅ 로그인됨: ${client.user.tag}`);
 
   // 🔔 정식 자동 스케줄 등록
   scheduleIslandAlerts(client);
-
-  // 🕒 현재 한국 시간 출력
-  const now = new Date();
-  console.log(now.toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }));
 });
 
-client.on("messageCreate", async (message) => {
+client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
-  if (message.content === "!모험섬") {
-    const reply = await getTodayGoldIslands();
-    console.log(reply);
+  if (message.content === '!골드섬') {
+    const reply = await getTodayGoldIslands(message.content);
     if (!reply) {
       return;
     }
 
-    message.channel.send(reply);
+    message.channel.send(
+      `@everyone\n⏰ 오늘 골드를 주는 모험섬\n${reply}\n즐거운 로생되세요.\n ----------------------------------------`,
+    );
   }
 });
 

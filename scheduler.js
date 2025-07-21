@@ -11,9 +11,9 @@ export const scheduleIslandAlerts = (client) => {
       if (!message) {
         return;
       }
-      await channel.send(`@everyone\n⏰ 오늘 골드를 주는 모험섬\n${message} `);
-      await channel.send(`즐거운 로생되세요.`);
-      await channel.send(`----------------------------------------`);
+      await channel.send(
+        `@everyone\n⏰ 오늘 골드를 주는 모험섬\n${message}\n즐거운 로생되세요.\n ----------------------------------------`
+      );
     } catch (err) {
       console.error("❌ 자동 알림 전송 실패:", err);
     }
