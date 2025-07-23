@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { Client, GatewayIntentBits } from 'discord.js';
-import { scheduleIslandAlerts } from './scheduler.js';
-import { getTodayGoldIslands } from './islandFetcher.js';
+import { scheduleIslandAlerts } from './services/scheduler.js';
+import { getTodayGoldIslands } from './services/islandFetcher.js';
+import { getNoticesFromApi } from './services/isNexFetche.js';
 
 const client = new Client({
   intents: [
@@ -31,6 +32,14 @@ client.on('messageCreate', async (message) => {
     message.channel.send(
       `@everyone\n⏰ 오늘 골드를 주는 모험섬\n${reply}\n즐거운 로생되세요.\n ----------------------------------------`,
     );
+  }
+
+  if (message.content === '!공지') {
+    const reply = await getNoticesFromApi();
+    if (!reply) {
+      return;
+    }
+    message.channel.send(`${reply}`);
   }
 });
 

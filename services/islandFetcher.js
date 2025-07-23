@@ -1,27 +1,10 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { getTodayStringKST } from '../util/timeUtil.js';
 dotenv.config();
 
 // 오늘의 모든 모험섬 정보를 저장할 전역변수 배열 (외부에서 참조 가능)
 export let todayIslandsData = [];
-
-// 오늘 날짜(한국 시간) 문자열 반환 함수
-function getTodayStringKST() {
-  const now = new Date();
-  const options = {
-    timeZone: 'Asia/Seoul',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  };
-  const formatter = new Intl.DateTimeFormat('ko-KR', options);
-  const parts = formatter.formatToParts(now);
-
-  const year = parts.find((p) => p.type === 'year').value;
-  const month = parts.find((p) => p.type === 'month').value;
-  const day = parts.find((p) => p.type === 'day').value;
-  return `${year}-${month}-${day}`;
-}
 
 // 9시, 11시, 13시, 19시, 23시에 해당하는 시간만 필터링
 const ALLOWED_HOURS = ['09', '11', '13', '19', '23'];
