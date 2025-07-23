@@ -9,7 +9,7 @@ export let todayIslandsData = [];
 // 9시, 11시, 13시, 19시, 23시에 해당하는 시간만 필터링
 const ALLOWED_HOURS = ['09', '11', '13', '19', '23'];
 
-// 골드 아이템이 있는 모험섬만 추출
+// 골드 아이템이 있는 모험섬만 추출 (골드 주는 날짜도 고려)
 export const getTodayGoldIslands = async (cli = null) => {
   try {
     const todayString = getTodayStringKST();
@@ -31,48 +31,59 @@ export const getTodayGoldIslands = async (cli = null) => {
       },
     );
 
-    // 골드가 보상에 포함된 모험섬만 필터링
+    // 골드가 보상에 포함된 모험섬만 필터링 (골드 지급 날짜도 체크)
     const goldIslands = res.data.filter((event) => {
       if (event.CategoryName !== '모험 섬') return false;
+      // 골드 아이템이 있는지, 그리고 그 골드 아이템의 StartTimes에 오늘 날짜가 있는지 확인
       return event.RewardItems.some((reward) =>
-        reward.Items.some((item) => item.Name.includes('골드')),
+        reward.Items.some((item) => {
+          if (item.Name.includes('골드') && Array.isArray(item.StartTimes)) {
+            // 골드 지급 날짜가 오늘인지 확인
+            return item.StartTimes.some((goldTime) => goldTime.startsWith(todayString));
+          }
+          return false;
+        }),
       );
     });
 
-    // 오늘 날짜 + 허용된 시간대만 필터링
-    let ifToday = goldIslands.filter((event) => {
-      for (const time of event.StartTimes) {
-        const [datePart, timePart] = time.split('T');
-        if (datePart === todayString) {
-          const hour = timePart.split(':')[0];
-          if (ALLOWED_HOURS.includes(hour)) {
-            return true;
-          }
+    // 오늘 날짜 + 허용된 시간대 + 골드 지급 시간만 필터링
+    let ifToday = goldIslands
+      .map((event) => {
+        // 골드 아이템의 StartTimes 중 오늘 날짜이면서 허용된 시간대만 추출
+        let goldTimes = [];
+        event.RewardItems.forEach((reward) => {
+          reward.Items.forEach((item) => {
+            if (item.Name.includes('골드') && Array.isArray(item.StartTimes)) {
+              item.StartTimes.forEach((goldTime) => {
+                const [datePart, timePart] = goldTime.split('T');
+                if (datePart === todayString) {
+                  const hour = timePart.split(':')[0];
+                  if (ALLOWED_HOURS.includes(hour)) {
+                    goldTimes.push(`${hour}시`);
+                  }
+                }
+              });
+            }
+          });
+        });
+        if (goldTimes.length > 0) {
+          return {
+            ContentsName: event.ContentsName,
+            goldTimes: goldTimes.sort((a, b) => a.localeCompare(b)),
+          };
         }
-      }
-      return false;
-    });
+        return null;
+      })
+      .filter((event) => event !== null);
 
     if (!ifToday || ifToday.length === 0) {
       return null;
     }
 
-    const todayGoldIsland = ifToday.map((event) => {
-      return `${event.ContentsName} ${event.StartTimes.join(', ')}`;
-    });
-
     // 메시지 생성
     const message = ifToday
       .map((event) => {
-        // 오늘 날짜에 해당하는 StartTimes만 추출 및 정렬
-        const todayTimes = event.StartTimes.filter((time) => time.startsWith(todayString)).map(
-          (time) => {
-            const hour = time.split('T')[1].split(':')[0];
-            return `${hour}시`;
-          },
-        );
-
-        return `${event.ContentsName}: (${todayTimes.join(', ')})`;
+        return `${event.ContentsName}: (${event.goldTimes.join(', ')})`;
       })
       .join('\n');
 
