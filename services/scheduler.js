@@ -29,7 +29,7 @@ const sendNotice = async (client) => {
     if (!message) {
       return;
     }
-    await channel.send(`${message[0]}`);
+    await channel.send(`${message}`);
   } catch (err) {
     console.error('❌ 자동 알림 전송 실패(공지):', err);
   }
