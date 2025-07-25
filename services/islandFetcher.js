@@ -8,7 +8,7 @@ export let todayIslandsData = [];
 export let weekdata = null;
 
 // 골드섬 알림을 보낼 시간대
-const ALLOWED_HOURS = ['09', '11', '13', '19', '23'];
+const ALLOWED_HOURS = ['09', '11', '13', '19', '21', '23'];
 
 /**
  * 오늘 골드를 주는 모험섬 정보를 반환하는 함수
