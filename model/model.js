@@ -1,3 +1,4 @@
+import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 // 로스트아크 게임 컨텐츠 캘린더 API에서 데이터를 가져오는 함수
