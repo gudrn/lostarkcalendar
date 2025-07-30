@@ -1,5 +1,5 @@
 import schedule from 'node-schedule';
-import { getTodayGoldIslands } from './islandFetcher.js';
+import { getTodayGoldIslands, setWeekdata } from './islandFetcher.js';
 import dotenv from 'dotenv';
 import { getNoticesFromApi } from './isNexFetche.js';
 dotenv.config();
@@ -35,7 +35,7 @@ const sendIslandMessage = async (client) => {
 const sendNotice = async (client) => {
   try {
     // weekdata를 null로 초기화 (데이터 갱신 목적)
-    weekdata = null;
+    setWeekdata();
     // 환경변수에서 공지 채널 ID를 가져와 해당 채널 객체를 fetch
     const channel = await client.channels.fetch(process.env.CHANNEL_ID2);
     // 공지사항 메시지 가져오기

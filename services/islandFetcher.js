@@ -5,7 +5,7 @@ dotenv.config();
 
 // 오늘의 모든 모험섬 정보를 저장할 전역 변수 (외부에서 참조 가능)
 export let todayIslandsData = [];
-export let weekdata = null;
+let weekdata = null;
 
 // 골드섬 알림을 보낼 시간대
 const ALLOWED_HOURS = ['09', '11', '13', '19', '21', '23'];
@@ -18,7 +18,6 @@ const ALLOWED_HOURS = ['09', '11', '13', '19', '21', '23'];
 export const getTodayGoldIslands = async (cli = null) => {
   try {
     const todayString = getTodayStringKST();
-
     // 명령어로 호출 시 todayIslandsData에 데이터가 있으면 첫 번째 메시지 반환
     if (cli === '!골드섬' && todayIslandsData.length > 0) {
       return todayIslandsData[0];
@@ -26,6 +25,9 @@ export const getTodayGoldIslands = async (cli = null) => {
     // 명령어가 아니고 todayIslandsData에 데이터가 있으면 마지막 메시지 반환(스케줄러용)
     if (todayIslandsData.length > 0) {
       return todayIslandsData.pop();
+    }
+    if (!weekdata) {
+      await getWeekdata();
     }
 
     // weekdata에서 골드가 보상에 포함된 모험섬만 필터링
