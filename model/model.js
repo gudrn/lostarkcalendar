@@ -29,3 +29,37 @@ export const fetchNoticesApi = async () => {
   // 받아온 데이터 반환
   return data;
 };
+
+// 보석 아이템 페이지를 가져오는 함수
+export const fnFetchEnGemstoneFromApi = async (sName, grade) => {
+  try {
+    const oResponse = await fetch(`${lostarkConfig.lostarkapiurl}/auctions/items`, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `bearer ${lostarkConfig.lostarkapikey}`,
+      },
+      body: JSON.stringify({
+        ItemLevelMin: 0,
+        ItemLevelMax: 0,
+        ItemGradeQuality: null,
+        ItemUpgradeLevel: null,
+        ItemTradeAllowCount: null,
+        Sort: 'BUY_PRICE',
+        CategoryCode: marketCode.gem,
+        ItemTier: 4,
+        ItemGrade: `${grade}`,
+        ItemName: sName,
+        PageNo: 0,
+        SortCondition: 'ASC',
+      }),
+    });
+    const oData = await oResponse.json();
+
+    return oData.Items;
+  } catch (error) {
+    console.error('fnFetchEnGemstoneFromApi 에러:', error);
+    return null;
+  }
+};

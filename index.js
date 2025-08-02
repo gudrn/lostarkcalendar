@@ -40,6 +40,14 @@ client.on('messageCreate', async (message) => {
     }
     message.channel.send(`${reply}`);
   }
+
+  if (message.content === '!보석') {
+    const reply = await arrMarketGemItemFromApi();
+    if (!reply) {
+      return;
+    }
+    message.channel.send(`${reply}`);
+  }
 });
 
 client.login(process.env.DISCORD_TOKEN);
