@@ -6,6 +6,7 @@ import { getTodayGoldIslands, getWeekdata } from './services/islandFetcher.js';
 import { getNoticesFromApi } from './services/isNexFetche.js';
 import { arrMarketGemItemFromApi } from './services/gemPrices.js';
 
+let time = null;
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -43,6 +44,22 @@ client.on('messageCreate', async (message) => {
   }
 
   if (message.content === '!보석') {
+    const currentTime = new Date();
+    if (time === null) {
+      time = currentTime;
+    } else {
+      const timeDiff = currentTime - time;
+      if (timeDiff < 5 * 60 * 1000) {
+        message.channel.send(
+          `⏳ 보석 시세는 ${Math.ceil(
+            (5 * 60 * 1000 - timeDiff) / 60000,
+          )}분 후에 다시 조회할 수 있습니다.`,
+        );
+        return;
+      }
+    }
+
+    time = currentTime;
     const reply = await arrMarketGemItemFromApi();
     if (!reply) {
       return;
