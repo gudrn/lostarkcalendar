@@ -50,7 +50,7 @@ const marketCode = {
   gemBox: 220000, // 보석 상자
 };
 
-const gemstones = [
+export const gemstones = [
   {
     grade: '전설',
     name: '작열의 보석',
@@ -174,10 +174,3 @@ const exceptedRelics = [
     itemCurrentMinPrice: 749,
   },
 ];
-
-module.exports = {
-  marketCode,
-  gemstones,
-  equipmentTypes,
-  exceptedRelics,
-};

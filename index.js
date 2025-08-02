@@ -4,6 +4,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import { scheduleIslandAlerts } from './services/scheduler.js';
 import { getTodayGoldIslands, getWeekdata } from './services/islandFetcher.js';
 import { getNoticesFromApi } from './services/isNexFetche.js';
+import { arrMarketGemItemFromApi } from './services/gemPrices.js';
 
 const client = new Client({
   intents: [

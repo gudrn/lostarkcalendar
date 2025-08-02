@@ -33,12 +33,12 @@ export const fetchNoticesApi = async () => {
 // 보석 아이템 페이지를 가져오는 함수
 export const fnFetchEnGemstoneFromApi = async (sName, grade) => {
   try {
-    const oResponse = await fetch(`${lostarkConfig.lostarkapiurl}/auctions/items`, {
+    const oResponse = await fetch(`https://developer-lostark.game.onstove.com/auctions/items`, {
       method: 'POST',
       headers: {
         accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `bearer ${lostarkConfig.lostarkapikey}`,
+        Authorization: `bearer ${process.env.LOSTARK_API_KEY}`,
       },
       body: JSON.stringify({
         ItemLevelMin: 0,
@@ -47,7 +47,7 @@ export const fnFetchEnGemstoneFromApi = async (sName, grade) => {
         ItemUpgradeLevel: null,
         ItemTradeAllowCount: null,
         Sort: 'BUY_PRICE',
-        CategoryCode: marketCode.gem,
+        CategoryCode: 210000,
         ItemTier: 4,
         ItemGrade: `${grade}`,
         ItemName: sName,
