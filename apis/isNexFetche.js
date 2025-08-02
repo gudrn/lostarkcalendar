@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { getTodayStringKST } from '../util/timeUtil.js';
+import { getTodayStringKST } from '../utils/timeUtil.js';
 import { fetchNoticesApi } from '../model/model.js';
 dotenv.config();
 

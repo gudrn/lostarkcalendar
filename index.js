@@ -2,9 +2,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { Client, GatewayIntentBits } from 'discord.js';
 import { scheduleIslandAlerts } from './services/scheduler.js';
-import { getTodayGoldIslands, getWeekdata } from './services/islandFetcher.js';
-import { getNoticesFromApi } from './services/isNexFetche.js';
-import { arrMarketGemItemFromApi } from './services/gemPrices.js';
+import { getTodayGoldIslands, getWeekdata } from './fetchers/islandFetcher.js';
+import { getNoticesFromApi } from './apis/isNexFetche.js';
+import { getGemstonePrices } from './fetchers/gemstoneFetcher.js';
 
 let time = null;
 const client = new Client({
@@ -26,7 +26,8 @@ client.on('messageCreate', async (message) => {
 
   if (message.content === '!골드섬') {
     const reply = await getTodayGoldIslands(message.content);
-    if (!reply) {
+    if (!reply || reply === false) {
+      message.channel.send('💰 오늘은 골드 모험섬이 없습니다.');
       return;
     }
 
@@ -37,10 +38,14 @@ client.on('messageCreate', async (message) => {
 
   if (message.content === '!공지') {
     const reply = await getNoticesFromApi();
-    if (!reply) {
+    if (!reply || (Array.isArray(reply) && reply.length === 0)) {
+      message.channel.send('📢 오늘은 새로운 공지사항이 없습니다.');
       return;
     }
-    message.channel.send(`${reply}`);
+
+    // 배열인 경우 첫 번째 링크만 사용
+    const noticeLink = Array.isArray(reply) ? reply[0] : reply;
+    message.channel.send(`📢 오늘의 공지사항: ${noticeLink}`);
   }
 
   if (message.content === '!보석') {
@@ -60,8 +65,9 @@ client.on('messageCreate', async (message) => {
     }
 
     time = currentTime;
-    const reply = await arrMarketGemItemFromApi();
+    const reply = await getGemstonePrices();
     if (!reply) {
+      message.channel.send('❌ 보석 시세를 불러오지 못했습니다.');
       return;
     }
     message.channel.send(`${reply}`);
