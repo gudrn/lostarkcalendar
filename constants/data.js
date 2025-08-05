@@ -97,80 +97,23 @@ const equipmentTypes = [
   '반지',
 ]; //안쓸예정
 
-const exceptedRelics = [
-  {
-    itemName: '긴급구조 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 177,
-  },
-  {
-    itemName: '약자 무시 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 110,
-  },
-  {
-    itemName: '불굴 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 97,
-  },
-  {
-    itemName: '번개의 분노 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 88,
-  },
-  {
-    itemName: '부러진 뼈 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 87,
-  },
-  {
-    itemName: '위기 모면 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 80,
-  },
-  {
-    itemName: '강령술 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 80,
-  },
-  {
-    itemName: '굳은 의지 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 79,
-  },
-  {
-    itemName: '탈출의 명수 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 50,
-  },
-  {
-    itemName: '승부사 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 630,
-  },
-  {
-    itemName: '폭발물 전문가 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 420,
-  },
-  {
-    itemName: '추진력 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 294,
-  },
-  {
-    itemName: '분쇄의 주먹 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 221,
-  },
-  {
-    itemName: '시선 집중 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 899,
-  },
-  {
-    itemName: '선수필승 각인서',
-    itemIcon: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_25.png',
-    itemCurrentMinPrice: 749,
-  },
+// 아래 각인서는 결과에서 제외해야 합니다.
+export const excluderelics = [
+  '긴급구조 각인서',
+  '약자 무시 각인서',
+  '불굴 각인서',
+  '번개의 분노 각인서',
+  '부러진 뼈 각인서',
+  '위기 모면 각인서',
+  '강령술 각인서',
+  '굳은 의지 각인서',
+  '탈출의 명수 각인서',
+  '승부사 각인서',
+  '폭발물 전문가 각인서',
+  '추진력 각인서',
+  '분쇄의 주먹 각인서',
+  '시선 집중 각인서',
+  '선수필승 각인서',
+  '여신의 가호 각인서',
+  '실드관통 각인서',
 ];

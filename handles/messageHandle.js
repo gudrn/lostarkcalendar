@@ -1,6 +1,7 @@
 import { getTodayGoldIslands } from '../fetchers/islandFetcher.js';
 import { getGemstonePrices } from '../fetchers/gemstoneFetcher.js';
 import { getNoticesFromApi } from '../apis/isNexFetche.js';
+import { processRelicItems } from '../processors/relicProcessor.js';
 
 // 각 명령어별 핸들러를 객체로 분리하여 유지보수성을 높임
 const COMMAND_HANDLERS = {
@@ -48,7 +49,39 @@ const COMMAND_HANDLERS = {
         await message.channel.send('❌ 보석 시세를 불러오지 못했습니다.');
         return;
       }
-      await message.channel.send(`${reply}`);
+      await message.channel.send({ files: [reply] });
+    };
+  })(),
+
+  '!유물': (() => {
+    // 클로저로 시간 상태를 유지
+    let lastQueryTime = null;
+    return async (message) => {
+      const currentTime = new Date();
+      if (lastQueryTime !== null) {
+        const timeDiff = currentTime - lastQueryTime;
+        if (timeDiff < 5 * 60 * 1000) {
+          await message.channel.send(
+            `⏳ 유물 각인서 시세는 ${Math.ceil(
+              (5 * 60 * 1000 - timeDiff) / 60000,
+            )}분 후에 다시 조회할 수 있습니다.`,
+          );
+          return;
+        }
+      }
+      lastQueryTime = currentTime;
+      try {
+        const reply = await processRelicItems();
+
+        if (!reply) {
+          await message.channel.send('❌ 유물 각인서 정보를 불러오지 못했습니다.');
+          return;
+        }
+        // reply는 AttachmentBuilder 객체임
+        await message.channel.send({ files: [reply] });
+      } catch (err) {
+        await message.channel.send('❌ 유물 각인서 정보를 불러오는 중 오류가 발생했습니다.');
+      }
     };
   })(),
 };

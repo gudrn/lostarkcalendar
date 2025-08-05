@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { getTodayStringKST } from '../utils/timeUtil.js';
-import { fetchLandApi } from '../model/model.js';
+import { fetchLandApi } from '../apis/gameContentApi.js';
 import { processGoldIslands } from '../processors/islandProcessor.js';
 dotenv.config();
 

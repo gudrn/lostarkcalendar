@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { getTodayStringKST } from '../utils/timeUtil.js';
-import { fetchNoticesApi } from '../model/model.js';
+import { fetchNoticesApi } from '../apis/noticesApi.js';
 dotenv.config();
 
 // /news/notices 엔드포인트를 호출해서 오늘 날짜의 "업데이트 내역 안내" 공지 링크만 반환하는 함수

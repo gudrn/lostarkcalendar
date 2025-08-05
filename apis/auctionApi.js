@@ -18,3 +18,16 @@ export const fnFetchEnGemstoneFromApi = async (sName, grade) => {
   const oData = await apiPost('/auctions/items', body);
   return oData && oData.Items ? oData.Items : null;
 };
+
+//유물 각인선 페이지를 가져오는 함수
+export const fnFetchRelicFromApi = async (nPage) => {
+  const body = {
+    Sort: 'CURRENT_MIN_PRICE',
+    CategoryCode: 40000,
+    ItemGrade: '유물',
+    PageNo: nPage,
+    SortCondition: 'DESC',
+  };
+  const oData = await apiPost('/markets/items', body);
+  return oData.Items;
+};

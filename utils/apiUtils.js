@@ -19,10 +19,11 @@ export const apiGet = async (endpoint) => {
   }
 };
 
-// 공통 POST 요청 함수
+// 공통 POST 요청 함수 (에러 핸들링 및 응답 상태 체크 강화)
 export const apiPost = async (endpoint, body) => {
+  let response;
   try {
-    const response = await fetch(`${LOSTARK_API_BASE}${endpoint}`, {
+    response = await fetch(`${LOSTARK_API_BASE}${endpoint}`, {
       method: 'POST',
       headers: {
         accept: 'application/json',
@@ -31,8 +32,16 @@ export const apiPost = async (endpoint, body) => {
       },
       body: JSON.stringify(body),
     });
-    return await response.json();
   } catch (error) {
-    return handleApiError('apiPost', error);
+    // 네트워크 오류 등으로 fetch 자체가 실패한 경우
+    throw new Error('API POST 요청 중 네트워크 오류');
   }
+
+  if (!response.ok) {
+    // 응답이 실패한 경우
+    throw new Error(`API POST 요청 실패: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
 };
