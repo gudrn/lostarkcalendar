@@ -3,16 +3,26 @@ import { createCanvas, registerFont } from 'canvas';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// 한글 폰트 경로 설정 (예: 나눔고딕)
+// ===== 폰트 설정 (우분투 폰트 깨짐 대응) =====
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const fontPath = path.join(__dirname, '../assets/fonts/NanumGothic.ttf');
 
-// 폰트 등록 (한 번만 등록됨)
-try {
-  registerFont(fontPath, { family: 'NanumGothic' });
-} catch (e) {
-  // 이미 등록된 경우 무시
+// 우분투 환경에서 한글 폰트가 깨질 수 있으므로, NanumGothic이 없을 경우 Noto Sans CJK KR 등 대체 폰트도 시도
+const fontCandidates = [
+  { path: path.join(__dirname, '../assets/fonts/NanumGothic.ttf'), family: 'NanumGothic' },
+  { path: '/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc', family: 'Noto Sans CJK KR' }, // 우분투 기본 한글 폰트 경로
+  { path: '/usr/share/fonts/truetype/nanum/NanumGothic.ttf', family: 'NanumGothic' }, // 우분투 nanum 폰트 경로
+];
+
+let fontFamily = 'sans-serif';
+for (const font of fontCandidates) {
+  try {
+    registerFont(font.path, { family: font.family });
+    fontFamily = font.family;
+    break;
+  } catch (e) {
+    // 폰트 등록 실패 시 무시하고 다음 후보로
+  }
 }
 
 // 텍스처 깨짐 방지: 폰트 fallback, fontWeight, fontFeatureSettings, fontVariant 등 추가
@@ -34,7 +44,7 @@ function createRelicTableImage(data) {
   ctx.lineWidth = 1;
 
   // 텍스트 스타일 (한글 폰트 우선, fallback, fontWeight, fontVariant 등)
-  ctx.font = "bold 22px 'NanumGothic', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif";
+  ctx.font = `bold 22px '${fontFamily}', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif`;
   ctx.fillStyle = '#ffffff';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -55,12 +65,10 @@ function createRelicTableImage(data) {
 
       // 헤더와 바디 구분
       if (r === 0) {
-        ctx.font =
-          "bold 22px 'NanumGothic', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif";
+        ctx.font = `bold 22px '${fontFamily}', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif`;
         ctx.fillStyle = '#ffffff';
       } else {
-        ctx.font =
-          "20px 'NanumGothic', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif";
+        ctx.font = `20px '${fontFamily}', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif`;
         ctx.fillStyle = '#e0e0e0';
       }
 

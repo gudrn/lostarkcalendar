@@ -3,15 +3,26 @@ import { createCanvas, registerFont } from 'canvas';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// ===== 폰트 설정 =====
+// ===== 폰트 설정 (우분투 폰트 깨짐 대응) =====
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const fontPath = path.join(__dirname, '../assets/fonts/NanumGothic.ttf');
 
-try {
-  registerFont(fontPath, { family: 'NanumGothic' });
-} catch (e) {
-  // 이미 등록된 경우 무시
+// 우분투 환경에서 한글 폰트가 깨질 수 있으므로, NanumGothic이 없을 경우 Noto Sans CJK KR 등 대체 폰트도 시도
+const fontCandidates = [
+  { path: path.join(__dirname, '../assets/fonts/NanumGothic.ttf'), family: 'NanumGothic' },
+  { path: '/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc', family: 'Noto Sans CJK KR' }, // 우분투 기본 한글 폰트 경로
+  { path: '/usr/share/fonts/truetype/nanum/NanumGothic.ttf', family: 'NanumGothic' }, // 우분투 nanum 폰트 경로
+];
+
+let fontFamily = 'sans-serif';
+for (const font of fontCandidates) {
+  try {
+    registerFont(font.path, { family: font.family });
+    fontFamily = font.family;
+    break;
+  } catch (e) {
+    // 폰트 등록 실패 시 무시하고 다음 후보로
+  }
 }
 
 // ===== 보석 등급별 그룹화 =====
@@ -88,8 +99,7 @@ function createGemstoneTableImage(groupByGrade) {
       if (c === 0 && tableData[r][0] && tableData[r][1] === '') {
         ctx.fillStyle = '#FEE500';
         ctx.fillRect(0, y, width, r === 0 ? headerHeight : rowHeight);
-        ctx.font =
-          "bold 22px 'NanumGothic', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif";
+        ctx.font = `bold 22px '${fontFamily}', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif`;
         ctx.fillStyle = '#23272A';
         ctx.fillText(tableData[r][0], width / 2, cellY);
         break; // 등급 헤더는 한 줄만
@@ -97,8 +107,7 @@ function createGemstoneTableImage(groupByGrade) {
         // 첫 행(전체 헤더)은 없음
         continue;
       } else {
-        ctx.font =
-          "20px 'NanumGothic', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif";
+        ctx.font = `20px '${fontFamily}', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif`;
         ctx.fillStyle = '#e0e0e0';
         ctx.strokeRect(x, y, colWidth, rowHeight);
         const text = String(tableData[r][c] ?? '');
