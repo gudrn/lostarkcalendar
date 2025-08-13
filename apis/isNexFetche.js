@@ -15,7 +15,10 @@ export const getNoticesFromApi = async () => {
       .filter((notice) => {
         if (!notice.Date || !notice.Title) return false;
         const [datePart] = notice.Date.split('T');
-        return datePart === todayString && notice.Title.includes('업데이트 내역 안내');
+        return (
+          datePart === todayString &&
+          (notice.Title.includes('업데이트 내역 안내') || notice.Title.includes('라이브'))
+        );
       })
       .map((notice) => notice.Link);
 
