@@ -43,8 +43,10 @@ const sendNotice = async (client) => {
       // 메시지가 없으면 함수 종료
       return;
     }
-    // 채널에 공지사항 메시지 전송
-    await channel.send(`${message}`);
+    // 공지 링크가 여러 개일 경우 하나씩 따로 전송
+    for (const link of message) {
+      await channel.send(`${link}`);
+    }
   } catch (err) {
     // 에러 발생 시 콘솔에 에러 메시지 출력
     console.error('❌ 자동 알림 전송 실패(공지):', err);
