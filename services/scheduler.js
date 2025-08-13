@@ -1,7 +1,7 @@
 import schedule from 'node-schedule';
 import { getTodayGoldIslands, setWeekdata } from '../fetchers/islandFetcher.js';
 import dotenv from 'dotenv';
-import { getNoticesFromApi } from '../apis/isNexFetche.js';
+import { getNoticesFromApi } from '../services/noticeService.js';
 dotenv.config();
 
 /**

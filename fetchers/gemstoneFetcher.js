@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { gemstones } from '../constants/data.js';
+import { gemstones } from '../constants/gemstones.js';
 import { fnFetchEnGemstoneFromApi } from '../apis/auctionApi.js';
 import { formatGemstonePrices, groupGemstonesByGrade } from '../utils/gemstoneUtil.js';
 dotenv.config();
