@@ -5,6 +5,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * 시스템에 설치된 한글 폰트 중 사용 가능한 폰트를 우선순위대로 등록하고,
+ * 사용 가능한 폰트 패밀리명을 반환합니다.
+ * @returns {string} 사용 가능한 폰트 패밀리명
+ */
 export function getPreferredFontFamily() {
   const candidates = [
     { path: path.join(__dirname, '../../assets/fonts/NanumGothic.ttf'), family: 'NanumGothic' },
@@ -19,10 +24,9 @@ export function getPreferredFontFamily() {
       family = font.family;
       break;
     } catch (e) {
-      // ignore and try next
+      // 폰트 등록 실패 시 다음 후보로 넘어감
+      continue;
     }
   }
   return family;
 }
-
-

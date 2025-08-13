@@ -1,13 +1,22 @@
 import axios from 'axios';
-import { LOSTARK_API_BASE, getAuthHeader } from '../config/apiConfig.js';
+import { LOSTARK_API_BASE, getAuthHeader } from '../config/config.js';
 
-// 공통 에러 핸들러
+/**
+ * API 에러를 처리하는 함수
+ * @param {string} fnName - 함수명
+ * @param {Error} error - 에러 객체
+ * @returns {null}
+ */
 export const handleApiError = (fnName, error) => {
   console.error(`${fnName} 에러:`, error);
   return null;
 };
 
-// 공통 GET 요청 함수
+/**
+ * GET 방식으로 API를 호출하는 함수
+ * @param {string} endpoint - API 엔드포인트
+ * @returns {Promise<any|null>} - 응답 데이터 또는 null
+ */
 export const apiGet = async (endpoint) => {
   try {
     const { data } = await axios.get(`${LOSTARK_API_BASE}${endpoint}`, {
@@ -19,20 +28,21 @@ export const apiGet = async (endpoint) => {
   }
 };
 
-// 공통 POST 요청 함수 (에러 핸들링 및 응답 상태 체크 강화)
+/**
+ * POST 방식으로 API를 호출하는 함수
+ * @param {string} endpoint - API 엔드포인트
+ * @param {object} body - 요청 바디
+ * @returns {Promise<any|null>} - 응답 데이터 또는 null
+ */
 export const apiPost = async (endpoint, body) => {
   try {
-    const { data } = await axios.post(
-      `${LOSTARK_API_BASE}${endpoint}`,
-      body,
-      {
-        headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-          ...getAuthHeader(),
-        },
+    const { data } = await axios.post(`${LOSTARK_API_BASE}${endpoint}`, body, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
-    );
+    });
     return data;
   } catch (error) {
     return handleApiError('apiPost', error);

@@ -1,12 +1,10 @@
-import dotenv from 'dotenv';
 import { gemstones } from '../constants/gemstones.js';
 import { fnFetchEnGemstoneFromApi } from '../apis/auctionApi.js';
 import { formatGemstonePrices, groupGemstonesByGrade } from '../utils/gemstoneUtil.js';
-dotenv.config();
 
 /**
- * 보석(작열/겁화 등) 마켓 데이터를 gemstones 배열의 각 조합별로 외부 API에서 조회하여
- * 이름, 가격만 추출한 배열로 반환
+ * 보석 시세를 조회하여 포맷팅된 메시지로 반환하는 함수
+ * @returns {Promise<string>} - 포맷팅된 보석 시세 메시지
  */
 export const getGemstonePrices = async () => {
   // 1. 조회할 보석 조합 생성
@@ -35,9 +33,9 @@ export const getGemstonePrices = async () => {
     })
     .filter(Boolean);
 
-  // 4. 등급별로 그룹화 (별도 유틸 함수로 분리)
+  // 4. 등급별로 그룹화
   const groupByGrade = groupGemstonesByGrade(arrGemItems);
 
-  // 5. 보기 좋은 메시지로 포맷팅 (별도 유틸 함수로 분리)
+  // 5. 보기 좋은 메시지로 포맷팅
   return formatGemstonePrices(groupByGrade);
 };

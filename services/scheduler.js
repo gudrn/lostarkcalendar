@@ -1,8 +1,7 @@
 import schedule from 'node-schedule';
 import { getTodayGoldIslands, setWeekdata } from '../fetchers/islandFetcher.js';
-import dotenv from 'dotenv';
+import { channelId } from '../config/config.js';
 import { getNoticesFromApi } from '../services/noticeService.js';
-dotenv.config();
 
 /**
  * 골드 모험섬 알림 메시지 전송 함수
@@ -11,7 +10,7 @@ dotenv.config();
 const sendIslandMessage = async (client) => {
   try {
     // 환경변수에서 채널 ID를 가져와 해당 채널 객체를 fetch
-    const channel = await client.channels.fetch(process.env.CHANNEL_ID);
+    const channel = await client.channels.fetch(channelId.channelId1);
     // 오늘의 골드 모험섬 메시지 가져오기
     const message = await getTodayGoldIslands();
     if (!message) {
@@ -37,7 +36,7 @@ const sendNotice = async (client) => {
     // weekdata를 null로 초기화 (데이터 갱신 목적)
     setWeekdata();
     // 환경변수에서 공지 채널 ID를 가져와 해당 채널 객체를 fetch
-    const channel = await client.channels.fetch(process.env.CHANNEL_ID2);
+    const channel = await client.channels.fetch(channelId.channelId2);
     // 공지사항 메시지 가져오기
     const message = await getNoticesFromApi();
     if (!message) {

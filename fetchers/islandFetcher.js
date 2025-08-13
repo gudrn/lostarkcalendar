@@ -1,8 +1,6 @@
-import dotenv from 'dotenv';
 import { getTodayStringKST } from '../utils/timeUtil.js';
 import { fetchLandApi } from '../apis/gameContentApi.js';
 import { processGoldIslands } from '../processors/islandProcessor.js';
-dotenv.config();
 
 // 오늘의 모든 모험섬 정보를 저장할 전역 변수 (외부에서 참조 가능)
 export let todayIslandsData = [];

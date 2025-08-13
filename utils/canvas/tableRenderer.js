@@ -11,6 +11,19 @@ const defaultColors = {
   sectionHeaderText: '#23272A',
 };
 
+/**
+ * 주어진 테이블 데이터를 이미지로 변환하여 렌더링하는 함수입니다.
+ * @param {Array<Array<string|number>>} tableData - 렌더링할 테이블 데이터 (2차원 배열)
+ * @param {Object} [options] - 렌더링 옵션 객체
+ * @param {number} [options.colWidth] - 컬럼(열) 너비 (기본값: 220)
+ * @param {number} [options.rowHeight] - 일반 행 높이 (기본값: 44)
+ * @param {number} [options.headerHeight] - 헤더 행 높이 (기본값: 54)
+ * @param {number} [options.sectionHeaderHeight] - 섹션 헤더 행 높이 (기본값: headerHeight)
+ * @param {number} [options.headerRowIndex] - 헤더 행 인덱스 (기본값: 0, null 또는 -1로 비활성화)
+ * @param {Object} [options.colors] - 색상 커스터마이즈 옵션
+ * @param {number} [options.colCount] - 컬럼 개수 강제 지정 (기본값: 데이터에서 자동 계산)
+ * @returns {Canvas} - 렌더링된 이미지(Canvas) 객체
+ */
 export function renderTableImage(tableData, options = {}) {
   const fontFamily = getPreferredFontFamily();
 
@@ -18,30 +31,32 @@ export function renderTableImage(tableData, options = {}) {
   const rowHeight = options.rowHeight ?? 44;
   const headerHeight = options.headerHeight ?? 54;
   const sectionHeaderHeight = options.sectionHeaderHeight ?? headerHeight;
-  const headerRowIndex = options.headerRowIndex ?? 0; // set to null/-1 to disable
+  const headerRowIndex = options.headerRowIndex ?? 0; // null 또는 -1로 비활성화 가능
   const colors = { ...defaultColors, ...(options.colors || {}) };
 
   const colCount = options.colCount ?? tableData.reduce((max, row) => Math.max(max, row.length), 0);
 
-  // Determine per-row height (support header row and section headers)
-  const isHeaderRow = (rIdx) => headerRowIndex !== null && headerRowIndex !== -1 && rIdx === headerRowIndex;
+  // 각 행이 헤더인지, 섹션 헤더인지 판별
+  const isHeaderRow = (rIdx) =>
+    headerRowIndex !== null && headerRowIndex !== -1 && rIdx === headerRowIndex;
   const isSectionHeaderRow = (row, rIdx) => {
     if (isHeaderRow(rIdx)) return false;
-    // section header if first cell has text and others are empty or missing
     if (!row || row.length === 0) return false;
     const firstHas = row[0] !== undefined && row[0] !== null && String(row[0]).length > 0;
     const othersEmpty = row.length === 1 || (row.length === 2 && String(row[1]) === '');
     return firstHas && othersEmpty;
   };
 
-  const rowHeights = tableData.map((row, rIdx) => (isHeaderRow(rIdx) || isSectionHeaderRow(row, rIdx) ? sectionHeaderHeight : rowHeight));
+  const rowHeights = tableData.map((row, rIdx) =>
+    isHeaderRow(rIdx) || isSectionHeaderRow(row, rIdx) ? sectionHeaderHeight : rowHeight,
+  );
   const width = colWidth * colCount;
   const height = rowHeights.reduce((sum, h) => sum + h, 0);
 
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d');
 
-  // background
+  // 배경 그리기
   ctx.fillStyle = colors.background;
   ctx.fillRect(0, 0, width, height);
   ctx.strokeStyle = colors.border;
@@ -59,13 +74,13 @@ export function renderTableImage(tableData, options = {}) {
     const centerY = currentY + h / 2;
 
     if (isHeader) {
-      // Draw header background across full width
+      // 헤더 배경 전체 그리기
       ctx.fillStyle = colors.headerBackground;
       ctx.fillRect(0, currentY, width, h);
     }
 
     if (isSection) {
-      // Section header spans full width using first cell's text
+      // 섹션 헤더는 첫 번째 셀의 텍스트로 전체 폭에 표시
       ctx.fillStyle = colors.sectionHeaderBackground;
       ctx.fillRect(0, currentY, width, h);
       ctx.font = `bold 22px '${fontFamily}', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif`;
@@ -73,13 +88,13 @@ export function renderTableImage(tableData, options = {}) {
       const title = String(row[0] ?? '');
       ctx.fillText(title, width / 2, centerY);
     } else {
-      // Normal row (or header row with cells)
+      // 일반 행 또는 헤더 행
       for (let c = 0; c < colCount; c++) {
         const x = c * colWidth;
         const cellX = x + colWidth / 2;
         const text = row && row[c] !== undefined && row[c] !== null ? String(row[c]) : '';
 
-        // Cell border
+        // 셀 테두리
         ctx.strokeRect(x, currentY, colWidth, h);
 
         if (isHeader) {
@@ -89,7 +104,7 @@ export function renderTableImage(tableData, options = {}) {
         } else {
           ctx.font = `20px '${fontFamily}', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif`;
           ctx.fillStyle = colors.bodyText;
-          // Simple wrapping for long text (two lines)
+          // 긴 텍스트는 두 줄로 나눠서 표시
           if (text.length > 16) {
             const firstLine = text.slice(0, 16);
             const secondLine = text.slice(16, 32);
@@ -107,5 +122,3 @@ export function renderTableImage(tableData, options = {}) {
 
   return canvas.toBuffer('image/png');
 }
-
-

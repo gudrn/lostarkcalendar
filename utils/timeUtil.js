@@ -1,4 +1,7 @@
-// 오늘 날짜(한국 시간) 문자열 반환 함수
+/**
+ * 오늘 날짜를 KST(한국 표준시) 기준으로 'YYYY-MM-DD' 형식의 문자열로 반환합니다.
+ * @returns {string} - 오늘 날짜 문자열 (예: '2024-06-13')
+ */
 export function getTodayStringKST() {
   const now = new Date();
   const options = {

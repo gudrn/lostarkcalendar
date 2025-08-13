@@ -1,7 +1,6 @@
 import { handleIslandCommand } from '../commands/island.js';
-import { handleGemstoneCommand } from '../commands/gemstone.js';
 import { handleNoticeCommand } from '../commands/notice.js';
-import { handleRelicCommand } from '../commands/relic.js';
+import { handleRelicCommand, handleGemstoneCommand } from '../commands/market.js';
 
 // 각 명령어별 핸들러를 객체로 분리하여 유지보수성을 높임
 const COMMAND_HANDLERS = {

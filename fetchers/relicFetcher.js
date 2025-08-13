@@ -1,27 +1,29 @@
-import dotenv from 'dotenv';
+import { marketAuction } from '../config/config.js';
 import { fnFetchRelicFromApi } from '../apis/auctionApi.js';
 import { fnMapMarketItem } from '../utils/mapper/relicMapper.js';
 import { excluderelics } from '../constants/relics.js';
-dotenv.config();
 
-// 유물 아이템(각인서 등) 마켓 데이터를 외부 API에서 조회하여 정제된 배열로 반환
-// 환경변수:
-// - RELIC_MAX_PAGES: 페이지 조회 수(기본 4)
-// - RELIC_TOP_N: 최종 상위 N개만 반환(가격 오름차순, 기본 50)
+/**
+ * 경매장 API에서 유물 각인서 아이템 목록을 가져와서
+ * 제외 각인서 필터링, 중복 제거(최저가 기준), 상위 N개만 반환
+ * @returns {Promise<Array>} 유물 각인서 아이템 배열
+ */
 export const arrMarketRelicsItemFromApi = async () => {
-  const maxPages = Number.parseInt(process.env.RELIC_MAX_PAGES, 10) || 4;
-  const topN = Number.parseInt(process.env.RELIC_TOP_N, 10) || 50;
+  // 최대 페이지 수와 상위 N개 개수 환경변수에서 읽기 (기본값: 4, 50)
+  const maxPages = marketAuction.RELIC_MAX_PAGES;
+  const topN = marketAuction.RELIC_TOP_N;
 
+  // 각 페이지별로 API 호출 Promise 배열 생성
   const pagePromises = Array.from({ length: maxPages }, (_, i) => fnFetchRelicFromApi(i + 1));
   const pages = await Promise.all(pagePromises);
 
-  // 페이지 합치기 + 매핑
+  // 모든 페이지 결과 합치고, 매핑 함수 적용
   const merged = pages.flatMap((arrItems) => (arrItems ? arrItems.map(fnMapMarketItem) : []));
 
-  // 제외 리스트 필터링
+  // 제외 각인서 리스트로 필터링
   const filtered = merged.filter((item) => !excluderelics.includes(item.itemName));
 
-  // 중복 제거(아이템명 기준)
+  // 아이템명 기준 중복 제거 (더 낮은 최저가 보존)
   const nameToItem = new Map();
   for (const item of filtered) {
     const key = item.itemName;
@@ -35,13 +37,7 @@ export const arrMarketRelicsItemFromApi = async () => {
     }
   }
 
-  // 정렬(최저가 오름차순)
-  const deduped = Array.from(nameToItem.values()).sort((a, b) => {
-    const av = a.itemCurrentMinPrice ?? Number.POSITIVE_INFINITY;
-    const bv = b.itemCurrentMinPrice ?? Number.POSITIVE_INFINITY;
-    return av - bv;
-  });
-
-  // 상위 N개 제한
-  return deduped.slice(0, topN);
+  // 정렬 생략 (API에서 이미 내림차순 정렬됨)
+  // 상위 N개만 반환
+  return Array.from(nameToItem.values()).slice(0, topN);
 };
