@@ -21,7 +21,6 @@ export const getNoticesFromApi = async () => {
         );
       })
       .map((notice) => notice.Link);
-    console.log(links);
     // 링크 배열 반환 (없으면 빈 배열)
     return links;
   } catch (error) {
