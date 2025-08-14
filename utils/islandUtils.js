@@ -53,4 +53,23 @@ export const getTodayTimes = (startTimes, todayString) => {
 export const createGoldIslandMessage = (island, todayTimes) => {
   const timeString = todayTimes.map((t) => `${t}시`).join(', ');
   return `${island.ContentsName}: (${timeString})`;
-}; 
+};
+
+/**
+ * 오늘 날짜의 "업데이트 내역 안내" 또는 "라이브"가 포함된 공지만 필터링하여 링크 배열로 반환하는 함수
+ * @param {Array} data - 공지사항 데이터 배열
+ * @param {string} todayString - 오늘 날짜 문자열
+ * @returns {string[]} 링크 배열
+ */
+export const extractTodayUpdateNoticeLinks = (data, todayString) => {
+  return data
+    .filter((notice) => {
+      if (!notice.Date || !notice.Title) return false;
+      const [datePart] = notice.Date.split('T');
+      return (
+        datePart === todayString &&
+        (notice.Title.includes('업데이트 내역 안내') || notice.Title.includes('라이브'))
+      );
+    })
+    .map((notice) => notice.Link);
+};

@@ -1,7 +1,7 @@
 import schedule from 'node-schedule';
 import { getTodayGoldIslands, setWeekdata } from '../fetchers/islandFetcher.js';
 import { channelId } from '../config/config.js';
-import { getNoticesFromApi } from '../services/noticeService.js';
+import { getNoticesFromApi } from '../processors/noticeProcessor.js';
 
 /**
  * 골드 모험섬 알림 메시지 전송 함수

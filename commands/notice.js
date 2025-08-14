@@ -1,4 +1,4 @@
-import { getNoticesFromApi } from '../services/noticeService.js';
+import { getNoticesFromApi } from '../processors/noticeProcessor.js';
 
 /**
  * 공지사항 명령어 핸들러
