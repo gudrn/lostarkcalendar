@@ -15,7 +15,7 @@ const defaultColors = {
  * 주어진 테이블 데이터를 이미지로 변환하여 렌더링하는 함수입니다.
  * @param {Array<Array<string|number>>} tableData - 렌더링할 테이블 데이터 (2차원 배열)
  * @param {Object} [options] - 렌더링 옵션 객체
- * @param {number} [options.colWidth] - 컬럼(열) 너비 (기본값: 220)
+ * @param {number} [options.colWidth] - 컬럼(열) 너비 (기본값: 220, 두번째 셀은 1.5배)
  * @param {number} [options.rowHeight] - 일반 행 높이 (기본값: 44)
  * @param {number} [options.headerHeight] - 헤더 행 높이 (기본값: 54)
  * @param {number} [options.sectionHeaderHeight] - 섹션 헤더 행 높이 (기본값: headerHeight)
@@ -28,6 +28,7 @@ export function renderTableImage(tableData, options = {}) {
   const fontFamily = getPreferredFontFamily();
 
   const colWidth = options.colWidth ?? 220;
+  const secondColRatio = 1.5; // 두번째 셀을 1.5배로
   const rowHeight = options.rowHeight ?? 44;
   const headerHeight = options.headerHeight ?? 54;
   const sectionHeaderHeight = options.sectionHeaderHeight ?? headerHeight;
@@ -35,6 +36,19 @@ export function renderTableImage(tableData, options = {}) {
   const colors = { ...defaultColors, ...(options.colors || {}) };
 
   const colCount = options.colCount ?? tableData.reduce((max, row) => Math.max(max, row.length), 0);
+
+  // 각 열의 너비 배열 생성 (colCount가 3 이하일 때는 두번째 셀도 기본 너비)
+  const colWidths = [];
+  for (let i = 0; i < colCount; i++) {
+    if (colCount > 2 && i === 1) {
+      colWidths.push(colWidth * secondColRatio);
+    } else {
+      colWidths.push(colWidth);
+    }
+  }
+
+  // 전체 테이블의 너비 계산
+  const width = colWidths.reduce((sum, w) => sum + w, 0);
 
   // 각 행이 헤더인지, 섹션 헤더인지 판별
   const isHeaderRow = (rIdx) =>
@@ -50,7 +64,6 @@ export function renderTableImage(tableData, options = {}) {
   const rowHeights = tableData.map((row, rIdx) =>
     isHeaderRow(rIdx) || isSectionHeaderRow(row, rIdx) ? sectionHeaderHeight : rowHeight,
   );
-  const width = colWidth * colCount;
   const height = rowHeights.reduce((sum, h) => sum + h, 0);
 
   const canvas = createCanvas(width, height);
@@ -89,13 +102,14 @@ export function renderTableImage(tableData, options = {}) {
       ctx.fillText(title, width / 2, centerY);
     } else {
       // 일반 행 또는 헤더 행
+      let x = 0;
       for (let c = 0; c < colCount; c++) {
-        const x = c * colWidth;
-        const cellX = x + colWidth / 2;
+        const cellWidth = colWidths[c];
+        const cellX = x + cellWidth / 2;
         const text = row && row[c] !== undefined && row[c] !== null ? String(row[c]) : '';
 
         // 셀 테두리
-        ctx.strokeRect(x, currentY, colWidth, h);
+        ctx.strokeRect(x, currentY, cellWidth, h);
 
         if (isHeader) {
           ctx.font = `bold 22px '${fontFamily}', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Arial', sans-serif`;
@@ -114,6 +128,7 @@ export function renderTableImage(tableData, options = {}) {
             ctx.fillText(text, cellX, centerY);
           }
         }
+        x += cellWidth;
       }
     }
 
