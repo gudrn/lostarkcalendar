@@ -10,6 +10,6 @@ export const handleIslandCommand = async (message) => {
   if (!reply || reply === false) return;
 
   await message.channel.send(
-    `@모험섬알림 \n⏰ 오늘 골드를 주는 모험섬\n${reply}\n즐거운 로생되세요.\n ----------------------------------------`,
+    `@everyone \n⏰ 오늘 골드를 주는 모험섬\n${reply}\n즐거운 로생되세요.\n ----------------------------------------`,
   );
 };
