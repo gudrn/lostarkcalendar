@@ -1,4 +1,5 @@
 import { getTodayGoldIslands } from '../fetchers/islandFetcher.js';
+import { roleToggle } from '../utils/roleToggle.js';
 
 /**
  * 모험섬 명령어를 처리하는 함수
@@ -10,6 +11,6 @@ export const handleIslandCommand = async (message) => {
   if (!reply || reply === false) return;
 
   await message.channel.send(
-    `@everyone \n⏰ 오늘 골드를 주는 모험섬\n${reply}\n즐거운 로생되세요.\n ----------------------------------------`,
+    `<@&${roleToggle.ROLE_ID}> \n⏰ 오늘 골드를 주는 모험섬\n${reply}\n즐거운 로생되세요.\n ----------------------------------------`,
   );
 };

@@ -1,11 +1,12 @@
 import { DISCORD_TOKEN } from './config/config.js';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { scheduleIslandAlerts } from './services/scheduler.js';
-import { handleMessage } from './handles/messageHandle.js';
+import { handleMessage, handle as interactionHandle } from './handles/messageHandle.js';
 
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
   ],
@@ -22,5 +23,6 @@ client.once('ready', async () => {
 });
 
 client.on('messageCreate', handleMessage);
+client.on('interactionCreate', interactionHandle.execute);
 
 client.login(DISCORD_TOKEN);
