@@ -20,7 +20,7 @@ const sendIslandMessage = async (client) => {
     }
     // 채널에 메시지 전송
     await channel.send(
-      `<@&${roleToggle.ROLE_ID}> \n⏰ 오늘 골드를 주는 모험섬\n${reply}\n즐거운 로생되세요.\n ----------------------------------------`,
+      `<@&${roleToggle.ROLE_ID}> \n⏰ 오늘 골드를 주는 모험섬\n${message}\n즐거운 로생되세요.\n ----------------------------------------`,
     );
   } catch (err) {
     // 에러 발생 시 콘솔에 에러 메시지 출력
