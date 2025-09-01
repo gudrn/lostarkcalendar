@@ -1,5 +1,6 @@
+import { ROLE_ID } from "../config/config";
 export const roleToggle = {
-    ROLE_ID: "1410108934777344031", // 골드섬 알림 역할 ID
+    ROLE_ID: ROLE_ID, // 골드섬 알림 역할 ID
 
     buildButtons(ActionRowBuilder, ButtonBuilder, ButtonStyle) {
         return new ActionRowBuilder()

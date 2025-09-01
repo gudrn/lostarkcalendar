@@ -3,6 +3,7 @@ dotenv.config();
 
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 export const LOSTARK_API_BASE = process.env.LOSTARK_API_BASE;
+export const ROLE_ID = process.env.ROLE_ID;
 export const getAuthHeader = () => ({
   Authorization: `Bearer ${process.env.LOSTARK_API_KEY}`,
 });
