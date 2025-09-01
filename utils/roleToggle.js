@@ -1,4 +1,4 @@
-import { ROLE_ID } from "../config/config";
+import { ROLE_ID } from "../config/config.js";
 export const roleToggle = {
     ROLE_ID: ROLE_ID, // 골드섬 알림 역할 ID
 
